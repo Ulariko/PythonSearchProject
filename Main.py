@@ -13,13 +13,17 @@ def index():
     if request.method == 'POST':
         word = request.form['word']
         file = request.files['file']
+
+        # Save uploaded file
         filepath = os.path.join(UPLOAD_FOLDER, file.filename)
         file.save(filepath)
 
+        # Read file content
         with open(filepath, 'r', encoding='utf-8') as f:
             text = f.read()
 
-        highlighted_text = re.sub(rf'\b{word}\b', f'<mark>{word}</mark>', text, flags=re.IGNORECASE)
+        # Highlight word (case-insensitive)
+        highlighted_text = re.sub(rf'\b({re.escape(word)})\b', r'<mark>\1</mark>', text, flags=re.IGNORECASE)
 
     return render_template('index.html', result=highlighted_text)
 
