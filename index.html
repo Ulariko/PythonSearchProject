@@ -1,20 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Text Search Tool</title>
+  <meta charset="UTF-8">
+  <title>Muxmoon_found</title>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a3b63;
+      --accent: #007bff;
+      --glass: rgba(255, 255, 255, 0.6);
+      --radius: 14px;
+    }
+
+    body {
+      margin: 0;
+      font-family: Courier New, Monospace;
+      background: var(--bg);
+      color: #0a3b63;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+      backdrop-filter: blur(8px);
+      background: var(--glass);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    textarea, input[type="text"], button {
+      font-size: 1rem;
+      padding: 0.75rem;
+      margin-top: 1rem;
+      border: 1px solid #ccc;
+      border-radius: var(--radius);
+      font-family: inherit;
+      resize: vertical;
+    }
+
+    input[type="file"] {
+      margin-top: 1rem;
+    }
+
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background: #005fcc;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      background: #f9f9f9;
+      padding: 1rem;
+      border-radius: var(--radius);
+      border: 1px dashed #ccc;
+      flex-grow: 1;
+      margin-top: 1rem;
+    }
+
+    mark {
+      background: cyan;
+      font-weight: bold;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>Upload Text File and Search</h1>
-    <form method="POST" enctype="multipart/form-data">  
-        <input type="file" name="file" accept=".txt" required><br><br>
-        <input type="text" name="word" placeholder="Enter word" required><br><br>
-        <button type="submit">Find</button>
-    </form>
 
-    {% if result %}
-        <h2>Search Result:</h2>
-        <pre>{{ result|safe }}</pre>
-    {% endif %}
+  <header>
+    <h1>searching...</h1>
+    <p>Upload a .txt file or type text manually. Then search for any word.</p>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <label for="fileInput"><strong>Load .txt file</strong></label>
+      <input type="file" id="fileInput" accept=".txt">
+
+      <label for="textInput"><strong>Or enter text manually</strong></label>
+      <textarea id="textInput" rows="10">One day, after dining with my little sister at the Gopher Wood's yard...</textarea>
+
+      <label for="wordInput"><strong>Word to search</strong></label>
+      <input type="text" id="wordInput" placeholder="e.g. sister">
+
+      <button onclick="runSearch()">Search</button>
+    </div>
+
+    <div class="card">
+      <h3>Result</h3>
+      <pre id="output">Result will appear here...</pre>
+    </div>
+  </div>
+
+  <script>
+    let pyodide;
+
+    async function initPyodide() {
+      pyodide = await loadPyodide();
+      await pyodide.runPythonAsync(`
+def highlight(txt, word):
+    return txt.replace(word, f"*{word}*")
+
+def bin_search(word, target):
+    l, r = 0, len(word) - 1
+    while(l <= r):
+        mid = (l + r) // 2
+        if(word[mid] == target):
+            return mid
+        elif(word[mid] < target):
+            l = mid + 1
+        else:
+            r = mid - 1
+    return -1
+
+def search_text(user_word, full_text):
+    user_word = user_word.strip().upper()
+    text_upper = full_text.strip().upper()
+    words = sorted(text_upper.replace(",", "").replace(".", "").split())
+    index = bin_search(words, user_word)
+    if index != -1:
+        highlighted = text_upper.replace(user_word, f"**{user_word}**")
+        return "Word found!\\n\\n" + highlighted
+    else:
+        return "Word not found. Try again."
+`);
+    }
+
+    initPyodide();
+
+    async function runSearch() {
+      const text = document.getElementById("textInput").value;
+      const word = document.getElementById("wordInput").value;
+
+      try {
+        const result = await pyodide.globals.get("search_text")(word, text);
+        const highlighted = result.replace(/\*\*(.+?)\*\*/g, '<mark>$1</mark>');
+        document.getElementById("output").innerHTML = highlighted;
+      } catch (err) {
+        document.getElementById("output").textContent = "Error: " + err;
+      }
+    }
+
+    document.getElementById("fileInput").addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const text = await file.text();
+        document.getElementById("textInput").value = text;
+      }
+    });
+  </script>
 </body>
 </html>
