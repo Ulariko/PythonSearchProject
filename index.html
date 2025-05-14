@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Muxmoon_found - Search Tool</title>
+  <title>Text Search & Highlight</title>
   <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
   <link rel="stylesheet">
   <style>
@@ -159,26 +159,26 @@
 
   <div class="container">
     <header>
-      <h1>Text Search Tool</h1>
-      <p>Upload a .txt file or enter text to search for a word.</p>
+      <h1>Find & Highlight Words</h1>
+      <p>Upload a text file or paste content manually to search for specific terms.</p>
     </header>
 
     <div class="input-group">
-      <label for="fileInput">Upload .txt file</label>
+      <label for="fileInput">Choose Your File</label>
       <input type="file" id="fileInput" accept=".txt">
 
-      <label for="textInput">Enter Text Manually</label>
-      <textarea id="textInput" placeholder="Type or paste your text here..."></textarea>
+      <label for="textInput">Paste or Type Text</label>
+      <textarea id="textInput" placeholder="Add or paste the text you want to search..."></textarea>
 
-      <label for="wordInput">Word to Search</label>
-      <input type="text" id="wordInput" placeholder="e.g. sister">
+      <label for="wordInput">Term to Search</label>
+      <input type="text" id="wordInput" placeholder="Enter word to find">
 
-      <button onclick="runSearch()">Search</button>
+      <button onclick="runSearch()">Search Now</button>
     </div>
 
     <div class="result-card">
-      <h3>Search Result</h3>
-      <pre id="output">Results will be displayed here...</pre>
+      <h3>Found Results</h3>
+      <pre id="output">Your results will appear here...</pre>
     </div>
   </div>
 
@@ -210,9 +210,9 @@ def search_text(user_word, full_text):
     index = bin_search(words, user_word)
     if index != -1:
         highlighted = text_upper.replace(user_word, f"**{user_word}**")
-        return "Word found!\\n\\n" + highlighted
+        return "Found!\\n\\n" + highlighted
     else:
-        return "Word not found. Try again."
+        return "Term not found. Please try another one."
 `);
     }
 
