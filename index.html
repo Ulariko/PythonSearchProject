@@ -7,30 +7,39 @@
   <link rel="stylesheet">
   <style>
     :root {
-      --bg: #0a3b63;
-      --accent: #007bff;
-      --glass: rgba(255, 255, 255, 0.6);
-      --radius: 14px;
+      --bg: #1d1f27;
+      --accent: #4e92d6;
+      --secondary-accent: #2d6cc8;
+      --glass: rgba(255, 255, 255, 0.5);
+      --radius: 16px;
+      --shadow: rgba(0, 0, 0, 0.15);
     }
 
     body {
       margin: 0;
-      font-family: Courier New, Monospace;
-      background: var(--bg);
-      color: #0a3b63;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #1d1f27 0%, #222831 100%);
+      color: #f1f1f1;
     }
 
     header {
       text-align: center;
-      padding: 2rem 1rem;
-      backdrop-filter: blur(8px);
+      padding: 2rem;
       background: var(--glass);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px var(--shadow);
     }
 
     header h1 {
       margin: 0;
-      font-size: 2rem;
+      font-size: 2.5rem;
+      color: var(--accent);
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: #b0b0b0;
     }
 
     .grid {
@@ -43,53 +52,63 @@
     }
 
     .card {
-      background: white;
+      background: #2d3948;
       border-radius: var(--radius);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-      padding: 1.5rem;
+      box-shadow: 0 6px 18px var(--shadow);
+      padding: 1.8rem;
       display: flex;
       flex-direction: column;
     }
 
-    textarea, input[type="text"], button {
+    label {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      color: #ddd;
+    }
+
+    input[type="file"], input[type="text"], textarea, button {
       font-size: 1rem;
-      padding: 0.75rem;
+      padding: 0.9rem;
       margin-top: 1rem;
-      border: 1px solid #ccc;
+      border: none;
       border-radius: var(--radius);
       font-family: inherit;
-      resize: vertical;
+      background: #f1f1f1;
+      color: #333;
     }
 
     input[type="file"] {
-      margin-top: 1rem;
+      margin-top: 1.5rem;
     }
 
     button {
       background: var(--accent);
       color: white;
-      border: none;
       cursor: pointer;
-      transition: background 0.2s ease;
+      transition: background 0.3s ease;
+      border-radius: var(--radius);
+      font-weight: bold;
     }
 
     button:hover {
-      background: #005fcc;
+      background: var(--secondary-accent);
     }
 
     pre {
       white-space: pre-wrap;
-      background: #f9f9f9;
-      padding: 1rem;
+      background: #333;
+      padding: 1.5rem;
       border-radius: var(--radius);
-      border: 1px dashed #ccc;
-      flex-grow: 1;
+      border: 1px solid #444;
       margin-top: 1rem;
+      color: #f9f9f9;
     }
 
     mark {
-      background: cyan;
+      background: #4e92d6;
       font-weight: bold;
+      padding: 0.1rem;
     }
 
     @media (max-width: 900px) {
@@ -102,19 +121,19 @@
 <body>
 
   <header>
-    <h1>searching...</h1>
-    <p>Upload a .txt file or type text manually. Then search for any word.</p>
+    <h1>Text Search Tool</h1>
+    <p>Upload a .txt file or type text manually to search for any word.</p>
   </header>
 
   <div class="grid">
     <div class="card">
-      <label for="fileInput"><strong>Load .txt file</strong></label>
+      <label for="fileInput">Load .txt file</label>
       <input type="file" id="fileInput" accept=".txt">
 
-      <label for="textInput"><strong>Or enter text manually</strong></label>
-      <textarea id="textInput" rows="10">One day, after dining with my little sister at the Gopher Wood's yard...</textarea>
+      <label for="textInput">Or enter text manually</label>
+      <textarea id="textInput" rows="10" placeholder="Enter text here...">One day, after dining with my little sister at the Gopher Wood's yard...</textarea>
 
-      <label for="wordInput"><strong>Word to search</strong></label>
+      <label for="wordInput">Word to search</label>
       <input type="text" id="wordInput" placeholder="e.g. sister">
 
       <button onclick="runSearch()">Search</button>
