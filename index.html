@@ -2,146 +2,183 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>UlarPythonSearch</title>
+  <title>Muxmoon_found - Search Tool</title>
   <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
   <link rel="stylesheet">
   <style>
-    :root {
-      --bg: #1d1f27;
-      --accent: #4e92d6;
-      --secondary-accent: #2d6cc8;
-      --glass: rgba(255, 255, 255, 0.5);
-      --radius: 16px;
-      --shadow: rgba(0, 0, 0, 0.15);
-    }
-
+    /* Global Styles */
     body {
       margin: 0;
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #1d1f27 0%, #222831 100%);
-      color: #f1f1f1;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f3f4f6;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      box-sizing: border-box;
     }
 
-    header {
-      text-align: center;
+    /* Main Container */
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      background: #fff;
+      border-radius: 10px;
       padding: 2rem;
-      background: var(--glass);
-      backdrop-filter: blur(10px);
-      border-radius: var(--radius);
-      box-shadow: 0 4px 20px var(--shadow);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Header Section */
+    header {
+      width: 100%;
+      background: linear-gradient(145deg, #ff6f61, #ff9a8b);
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
 
     header h1 {
-      margin: 0;
       font-size: 2.5rem;
-      color: var(--accent);
+      margin: 0;
     }
 
     header p {
-      font-size: 1.1rem;
-      color: #b0b0b0;
+      font-size: 1.2rem;
+      margin: 0.5rem 0;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      padding: 2rem;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    .card {
-      background: #2d3948;
-      border-radius: var(--radius);
-      box-shadow: 0 6px 18px var(--shadow);
-      padding: 1.8rem;
+    /* Input Fields and Button */
+    .input-group {
       display: flex;
       flex-direction: column;
+      width: 100%;
+      max-width: 900px;
+      gap: 1.2rem;
+      margin: 2rem 0;
     }
 
     label {
       font-weight: bold;
-      margin-bottom: 0.5rem;
       font-size: 1.1rem;
-      color: #ddd;
+      color: #444;
     }
 
-    input[type="file"], input[type="text"], textarea, button {
+    input[type="file"],
+    input[type="text"],
+    textarea {
+      padding: 1rem;
       font-size: 1rem;
-      padding: 0.9rem;
-      margin-top: 1rem;
-      border: none;
-      border-radius: var(--radius);
-      font-family: inherit;
-      background: #f1f1f1;
-      color: #333;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.3s ease;
     }
 
     input[type="file"] {
-      margin-top: 1.5rem;
+      background: #f7f7f7;
+    }
+
+    input[type="text"], textarea {
+      background: #fafafa;
+    }
+
+    input[type="file"]:focus,
+    input[type="text"]:focus,
+    textarea:focus {
+      border-color: #ff6f61;
+    }
+
+    textarea {
+      resize: vertical;
+      height: 150px;
     }
 
     button {
-      background: var(--accent);
+      background: #ff6f61;
       color: white;
+      padding: 1rem;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 10px;
       cursor: pointer;
-      transition: background 0.3s ease;
-      border-radius: var(--radius);
-      font-weight: bold;
+      transition: background-color 0.3s ease;
     }
 
     button:hover {
-      background: var(--secondary-accent);
+      background: #ff9a8b;
+    }
+
+    /* Result Display */
+    .result-card {
+      width: 100%;
+      max-width: 900px;
+      background: #f9f9f9;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
     pre {
+      background: #e4e4e4;
+      padding: 1rem;
+      border-radius: 10px;
+      color: #333;
+      font-family: 'Courier New', Courier, monospace;
       white-space: pre-wrap;
-      background: #333;
-      padding: 1.5rem;
-      border-radius: var(--radius);
-      border: 1px solid #444;
-      margin-top: 1rem;
-      color: #f9f9f9;
+      word-wrap: break-word;
     }
 
     mark {
-      background: #4e92d6;
+      background: #ff9a8b;
+      color: #fff;
       font-weight: bold;
       padding: 0.1rem;
     }
 
-    @media (max-width: 900px) {
-      .grid {
-        grid-template-columns: 1fr;
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .input-group {
+        gap: 1rem;
+      }
+
+      button {
+        font-size: 1rem;
+        padding: 0.8rem;
       }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Text Search Tool</h1>
-    <p>Upload a .txt file or type text manually to search for any word.</p>
-  </header>
+  <div class="container">
+    <header>
+      <h1>Text Search Tool</h1>
+      <p>Upload a .txt file or enter text to search for a word.</p>
+    </header>
 
-  <div class="grid">
-    <div class="card">
-      <label for="fileInput">Load .txt file</label>
+    <div class="input-group">
+      <label for="fileInput">Upload .txt file</label>
       <input type="file" id="fileInput" accept=".txt">
 
-      <label for="textInput">Or enter text manually</label>
-      <textarea id="textInput" rows="10" placeholder="Enter text here...">One day, after dining with my little sister at the Gopher Wood's yard...</textarea>
+      <label for="textInput">Enter Text Manually</label>
+      <textarea id="textInput" placeholder="Type or paste your text here..."></textarea>
 
-      <label for="wordInput">Word to search</label>
+      <label for="wordInput">Word to Search</label>
       <input type="text" id="wordInput" placeholder="e.g. sister">
 
       <button onclick="runSearch()">Search</button>
     </div>
 
-    <div class="card">
-      <h3>Result</h3>
-      <pre id="output">Result will appear here...</pre>
+    <div class="result-card">
+      <h3>Search Result</h3>
+      <pre id="output">Results will be displayed here...</pre>
     </div>
   </div>
 
@@ -202,5 +239,6 @@ def search_text(user_word, full_text):
       }
     });
   </script>
+
 </body>
 </html>
